@@ -17,7 +17,7 @@ namespace Load
                     openDialog.Filter = "RTF Files|*.rtf|All Files|*.*";
                     openDialog.Title = "Открыть RTF файл";
                     if (openDialog.ShowDialog() == DialogResult.OK)
-                    {
+                    { 
                         return File.ReadAllText(openDialog.FileName, Encoding.Default);
                     }
                 }
