@@ -24,7 +24,7 @@ namespace Save
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка при сохранении файла: {ex.Message}");
+                MessageBox.Show($"Ошибка: {ex.Message}");
             }
         }
     }

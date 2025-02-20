@@ -1,10 +1,10 @@
-﻿using IColor;
+﻿using ISelectionColor;
 using System.Drawing;
 using System.Windows.Forms;
 
 namespace SelectionColor
 {
-    public class SelectionColorClass : IColorClass
+    public class SelectionColorClass : ISelectionColorClass
     {
         public Color SelectColor()
         {

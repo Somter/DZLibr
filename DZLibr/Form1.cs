@@ -1,22 +1,31 @@
+using ILoad;
+using ISave;
+using ISelectionColor;
+using ISelectionFont;
+using System;
+using System.Drawing;
+using System.IO;
 using System.Reflection;
+using System.Windows.Forms;
 
 namespace DZLibr
 {
     public partial class Form1 : Form
     {
-        private ILoadClass loadObject;
-        private ISaveClass saveObject;
-        private IColorClass colorObject;
-        private IFontClass fontObject;
-
+        private ISaveClass save;
+        private ILoadClass load;
+        private ISelectionFontClass font;
+        private ISelectionColorClass color;   
+      
         public Form1()
         {
             InitializeComponent();
             LoadImplementations();
             this.loadToolStripMenuItem.Click += OnLoadFileClick;
-            this.saveToolStripMenuItem.Click += OnSaveFileClick;
             this.fontToolStripMenuItem.Click += OnSelectFontClick;
-            this.colorToolStripMenuItem.Click += OnSelectColorClick; //check
+            this.colorToolStripMenuItem.Click += OnSelectColorClick;
+            this.saveToolStripMenuItem.Click += OnSaveFileClick;
+            
         }
 
         private void LoadImplementations()
@@ -25,54 +34,56 @@ namespace DZLibr
             {
                 Assembly asmLoad = Assembly.LoadFrom("Load.dll");
                 Type typeLoad = asmLoad.GetType("Load.LoadClass");
-                loadObject = (ILoadClass)Activator.CreateInstance(typeLoad);
+                load = (ILoadClass)Activator.CreateInstance(typeLoad);
 
                 Assembly asmSave = Assembly.LoadFrom("Save.dll");
                 Type typeSave = asmSave.GetType("Save.SaveClass");
-                saveObject = (ISaveClass)Activator.CreateInstance(typeSave);
+                save = (ISaveClass)Activator.CreateInstance(typeSave);
 
                 Assembly asmColor = Assembly.LoadFrom("SelectionColor.dll");
                 Type typeColor = asmColor.GetType("SelectionColor.SelectionColorClass");
-                colorObject = (ISelectionColorClass)Activator.CreateInstance(typeColor);
+                color = (ISelectionColorClass)Activator.CreateInstance(typeColor);
 
                 Assembly asmFont = Assembly.LoadFrom("SelectionFont.dll");
                 Type typeFont = asmFont.GetType("SelectionFont.SelectionFontClass");
-                fontObject = (ISelectionFontClass)Activator.CreateInstance(typeFont);
+                font = (ISelectionFontClass)Activator.CreateInstance(typeFont);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка загрузки реализационных DLL: {ex.Message}");
+                MessageBox.Show($"Ошибка DLL: {ex.Message}");
             }
         }
 
         private void OnLoadFileClick(object sender, EventArgs e)
         {
-            string content = loadObject?.LoadFile();
+            string content = load?.LoadFile();
             if (!string.IsNullOrEmpty(content))
             {
                 richTextBox1.Rtf = content;
             }
         }
-
-        private void OnSaveFileClick(object sender, EventArgs e)
+        private void OnSelectColorClick(object sender, EventArgs e)
         {
-            saveObject?.SaveFile(richTextBox1.Rtf);
+            Color selectedColor = color?.SelectColor() ?? Color.Black;
+            richTextBox1.SelectionColor = selectedColor;
         }
 
         private void OnSelectFontClick(object sender, EventArgs e)
         {
-            Font selectedFont = fontObject?.SelectFont();
+            Font selectedFont = font?.SelectFont();
             if (selectedFont != null)
             {
                 richTextBox1.SelectionFont = selectedFont;
             }
         }
 
-        private void OnSelectColorClick(object sender, EventArgs e)
+        private void OnSaveFileClick(object sender, EventArgs e)
         {
-            Color selectedColor = colorObject?.SelectColor() ?? Color.Black;
-            richTextBox1.SelectionColor = selectedColor;
+            save?.SaveFile(richTextBox1.Rtf);
         }
+
+       
+       
 
     }
 }

@@ -13,7 +13,7 @@ namespace SelectionFont
                 if (fontDialog.ShowDialog() == DialogResult.OK)
                     return fontDialog.Font;
             }
-            return SystemFonts.DefaultFont; // Значение по умолчанию
+            return SystemFonts.DefaultFont;
         }
     }
 }
